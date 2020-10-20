@@ -8,6 +8,8 @@
 #include <chrono>
 #include <math.h>
 
+// SEM THREAD
+//OBS: O programa com Thread e o BioT.cpp
 using namespace std;
 using namespace chrono;
 
