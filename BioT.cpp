@@ -12,6 +12,7 @@
 using namespace std;
 using namespace chrono;
 
+FILE * sc = fopen("LogBio.txt","w");
 struct Tanqueoleo{
 	float qtd = 0;
 };
@@ -62,17 +63,17 @@ int orchestrator(int tempo);
 void tanqueO(){
 	if(jks == 5){
 			tqol.qtd = tqol.qtd + (1 +  (float)rand()/(float)(RAND_MAX/1));
-			printf("Tanque de oleo recebeu abastecimento\n");
+			fprintf(sc,"Tanque de oleo recebeu abastecimento\n");
 			jks = 1;
 		}else{
-			printf("Tanque de oleo nao recebeu abastecimento\n");
+			fprintf(sc,"Tanque de oleo nao recebeu abastecimento\n");
 			jks++;
 		}
 }
 void tanqueETNA(){
 	tqnaet.qtdEt = tqnaet.qtdEt + 0.1;
 	tqnaet.qtdNa = tqnaet.qtdNa + 0.3;
-	printf("Tanque Et Na recebeu abastecimento\n",tqnaet.qtdEt,tqnaet.qtdNa);
+	fprintf(sc,"Tanque Et Na recebeu abastecimento\n",tqnaet.qtdEt,tqnaet.qtdNa);
 }
 void tranqueR(){
 		if(decantador.qtd < 5.1){
@@ -80,13 +81,13 @@ void tranqueR(){
 				tqnaet.qtdEt = tqnaet.qtdEt - 2.5;
 				tqnaet.qtdNa = tqnaet.qtdNa - 1.25;
 				tqol.qtd = tqol.qtd - 1.25; 
-				printf("Reator processou\n");
+				fprintf(sc,"Reator processou\n");
 				decantador.qtd = decantador.qtd + 5; //mensagem
 			}else{
-				printf("Reator sem materia prima\n");
+				fprintf(sc,"Reator sem materia prima\n");
 			}
 		}else{
-			printf("Decantador Cheio, Espera\n");
+			fprintf(sc,"Decantador Cheio, Espera\n");
 		}	
 }
 void tranqueDec(){
@@ -96,15 +97,15 @@ void tranqueDec(){
 				tqgli.qtd = tqgli.qtd + 0.15;	//mensagem
 				secador.qtd = 0.39;	//mensagem
 				lavagem.qtd = 2.46;	//mensagem
-				printf("Decatandor processou\n");
+				fprintf(sc,"Decatandor processou\n");
 				jkp = 1;
 			}else{
-				printf("Decatandor sem materia prima\n");
+				fprintf(sc,"Decatandor sem materia prima\n");
 			}
 	
 		}else{
 			jkp++;
-			printf("Decantador em repouso\n");
+			fprintf(sc,"Decantador em repouso\n");
 		}
 }
 void secaET(){
@@ -113,24 +114,24 @@ void secaET(){
 			if(secador.qtd >= 0.3){
 				secador.qtd - 0.3;
 				tqnaet.qtdEt = tqnaet.qtdEt + 0.3;
-				printf("Secador processou 0.3\n");
+				fprintf(sc,"Secador processou 0.3\n");
 			}else if(secador.qtd < 0.3){
 				tqnaet.qtdEt = tqnaet.qtdEt + secador.qtd;	
-				printf("Secador processou apenas %f pois n tinha mais q isso\n",secador.qtd);
+				fprintf(sc,"Secador processou apenas %f pois n tinha mais q isso\n",secador.qtd);
 				secador.qtd = 0;
 			}
 		}else{
-			printf("Secador nao possui materia prima\n");
+			fprintf(sc,"Secador nao possui materia prima\n");
 		}
 }
 void lavag(){
 		if(	lavagem.qtd > 0 ){
 			secadorLavagem.qtd = secadorLavagem.qtd + (lavagem.qtd - (lavagem.qtd*0.15));
 			lavagem.qtd = 0;
-			printf("Lavagem processou\n");
+			fprintf(sc,"Lavagem processou\n");
 			
 		}else{
-			printf("Nao ha solucao para lavagem\n");
+			fprintf(sc,"Nao ha solucao para lavagem\n");
 		}
 	
 }
@@ -140,14 +141,14 @@ void secaLav(){
 		if(secadorLavagem.qtd >= 0.3){
 			secadorLavagem.qtd - 0.3;
 			bio.qtd = bio.qtd + 0.3;
-			printf("SecadorLavagem processou 0.3\n");
+			fprintf(sc,"SecadorLavagem processou 0.3\n");
 		}else if(secador.qtd < 0.3){
 			bio.qtd = bio.qtd + secadorLavagem.qtd;	
-			printf("SecadorLavagem processou apenas %f pois n tinha mais q isso\n",secadorLavagem.qtd);
+			fprintf(sc,"SecadorLavagem processou apenas %f pois n tinha mais q isso\n",secadorLavagem.qtd);
 			secadorLavagem.qtd = 0;
 		}
 	}else{
-		printf("SecadorLavagem nao possui materia prima\n");
+		fprintf(sc,"SecadorLavagem nao possui materia prima\n");
 	}
 }
 
@@ -198,18 +199,18 @@ int orchestrator(int tempo){
 		std::thread TQSELA(secaLav);
 		TQSELA.join();
 		//Fim secador Lavagem
-		printf("-Status dos Tanques:\n");
-		printf("Tanque de Oleo tem: %f\n",tqol.qtd);
-		printf("Tanque de EtNa tem, Et: %f \t Na: %f\n",tqnaet.qtdEt,tqnaet.qtdNa);
-		printf("Tanque Decantador tem: %f\n",decantador.qtd);
-		printf("Tanques de Lavagem tem ao total %f\n",lavagem.qtd);
-		printf("O secadorET tem: %f\n",secador.qtd);
-		printf("O secadorLavagem tem: %f\n",secadorLavagem.qtd);
-		printf("Tanque de glicerina tem %f\n",tqgli.qtd);
-		printf("Tanque de biodisel tem %f\n",bio.qtd);
+		fprintf(sc,"-Status dos Tanques:\n");
+		fprintf(sc,"Tanque de Oleo tem: %f\n",tqol.qtd);
+		fprintf(sc,"Tanque de EtNa tem, Et: %f \t Na: %f\n",tqnaet.qtdEt,tqnaet.qtdNa);
+		fprintf(sc,"Tanque Decantador tem: %f\n",decantador.qtd);
+		fprintf(sc,"Tanques de Lavagem tem ao total %f\n",lavagem.qtd);
+		fprintf(sc,"O secadorET tem: %f\n",secador.qtd);
+		fprintf(sc,"O secadorLavagem tem: %f\n",secadorLavagem.qtd);
+		fprintf(sc,"Tanque de glicerina tem %f\n",tqgli.qtd);
+		fprintf(sc,"Tanque de biodiesel tem %f\n",bio.qtd);
 		
 
-		printf("-------------------------------------------------\n");
+		fprintf(sc,"-------------------------------------------------\n");
 		sleep(0.1);
 		tmpst++;	
 	}
